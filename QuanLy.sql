@@ -67,4 +67,14 @@ INSERT INTO DOUONG (MaDoUong, TenDoUong, Gia) VALUES
 (10, N'Cacao latte', 30000),
 (11, N'Trà đào cam sả', 32000),
 (12, N'Hồng trà việt quất', 30000),
-(13, N'Trà chanh nha đam', 20000);
+(13, N'Trà chanh nha đam', 20000),
+(14, N'Yahul Ô long', 26000),
+(15, N'Yakul Việt quất', 28000),
+(16, N'Yakul Đào', 25000);
+
+INSERT INTO KHACHHANG (MaKH, TenKH, SDT) VALUES
+(1, N'Nguyễn Duy Đạt', 0265963206),
+(2, N'Phạm Minh Hoàng', 0366630733),
+(3, N'Nguyễn Thị Linh', 0338000873),
+(4, N'Cao Thùy Châm', 0969206477),
+(5, N'Mã Thục Quyên', 0837069885);
