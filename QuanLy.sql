@@ -4,30 +4,35 @@ GO
 USE QLQCP;
 GO
 
+DROP TABLE IF EXISTS DOAN
 CREATE TABLE DOAN(
     MaDoAn INT PRIMARY KEY,
     TenDoAn NVARCHAR(100) NOT NULL,
     Gia DECIMAL(10, 2) NOT NULL,
 );
 
+DROP TABLE IF EXISTS DOUONG
 CREATE TABLE DOUONG(
     MaDoUong INT PRIMARY KEY,
     TenDoUong NVARCHAR(100) NOT NULL,
     Gia DECIMAL(10, 2) NOT NULL 
 );
 
+DROP TABLE IF EXISTS KHACHHANG
 CREATE TABLE KHACHHANG(
     MaKH INT PRIMARY KEY,
     TenKH NVARCHAR(100) NOT NULL,
     SDT NVARCHAR(15) NOT NULL
 );
 
+DROP TABLE IF EXISTS HOADON
 CREATE TABLE HOADON(
     MaHoaDon INT PRIMARY KEY,
     NgayLap DATETIME NOT NULL,
     MaKH INT
 );
 
+DROP TABLE IF EXISTS CHITIETHOADON
 CREATE TABLE CHITIETHOADON(
     MaHoaDon INT,
     MaDoAn INT NULL,
@@ -53,6 +58,7 @@ INSERT INTO DOAN (MaDoAn, TenDoAn, Gia) VALUES
 (3, N'Nem chua rán', 36000),
 (4, N'Ngô cay', 15000),
 (5, N'Hướng dương', 15000);
+GO
 
 INSERT INTO DOUONG (MaDoUong, TenDoUong, Gia) VALUES
 (1, N'Cà phê đen', 20000),
@@ -71,6 +77,7 @@ INSERT INTO DOUONG (MaDoUong, TenDoUong, Gia) VALUES
 (14, N'Yahul Ô long', 26000),
 (15, N'Yakul Việt quất', 28000),
 (16, N'Yakul Đào', 25000);
+GO
 
 INSERT INTO KHACHHANG (MaKH, TenKH, SDT) VALUES
 (1, N'Nguyễn Duy Đạt', 0265963206),
@@ -78,3 +85,159 @@ INSERT INTO KHACHHANG (MaKH, TenKH, SDT) VALUES
 (3, N'Nguyễn Thị Linh', 0338000873),
 (4, N'Cao Thùy Châm', 0969206477),
 (5, N'Mã Thục Quyên', 0837069885);
+GO
+
+INSERT INTO HOADON (MaHoaDon, NgayLap, MaKH) VALUES
+(1, '2023-10-01 10:00:00', 1),
+(2, '2023-10-02 11:30:00', 2),
+(3, '2023-10-03 14:15:00', 3),
+(4, '2023-10-04 16:45:00', 4),
+(5, '2023-10-05 18:20:00', 5);
+GO
+
+INSERT INTO CHITIETHOADON (MaHoaDon, MaDoAn, MaDoUong, SoLuong) VALUES
+(1, 1, 1, 2),
+(1, 2, NULL, 1),
+(2, NULL, 3, 1),
+(2, 4, 2, 2),
+(3, 5, NULL, 1),
+(3, NULL, 4, 1),
+(4, 3, 5, 1),
+(4, NULL, 6, 2),
+(5, 2, NULL, 1),
+(5, NULL, 7, 1);
+GO
+
+---------------------------------------------------------------------------------------------------
+SELECT * FROM DOAN;
+GO
+
+INSERT INTO DOAN VALUES
+(100,'TENDOAN',100);
+GO
+
+UPDATE DOAN SET TenDoAn=N'TENMOI', Gia=100 WHERE MaDoAn=100;
+GO
+UPDATE DOAN SET Gia=250 WHERE MaDoAn=100;
+GO
+
+DELETE FROM DOAN WHERE MaDoAn=100;
+GO
+---------------------------------------------------------------------------------------------------
+SELECT * FROM DOUONG;
+GO
+
+INSERT INTO DOUONG VALUES
+(100,'TENDOUONG',100);
+GO
+
+UPDATE DOUONG SET TenDoUong=N'TENMOI', Gia=100 WHERE MaDoUong=100;
+GO
+UPDATE DOUONG SET Gia=250 WHERE MaDoUong=100;
+GO
+
+DELETE FROM DOUONG WHERE MaDoUong=100;
+GO
+---------------------------------------------------------------------------------------------------
+SELECT * FROM KHACHHANG;
+GO
+
+INSERT INTO KHACHHANG VALUES
+(100,'TENKH', '0123456789');
+GO
+
+UPDATE KHACHHANG SET TenKH=N'TENMOI', SDT='0987654321' WHERE MaKH=100;
+GO
+UPDATE KHACHHANG SET SDT='0265963206' WHERE MaKH=100;
+GO
+
+DELETE FROM KHACHHANG WHERE MaKH=100;
+GO
+---------------------------------------------------------------------------------------------------
+SELECT * FROM HOADON;
+GO
+
+INSERT INTO HOADON VALUES
+(100, GETDATE(), 1);
+GO
+
+UPDATE HOADON SET NgayLap=GETDATE(), MaKH=2 WHERE MaHoaDon=100;
+GO
+UPDATE HOADON SET MaKH=1 WHERE MaHoaDon=100;
+GO
+
+DELETE FROM HOADON WHERE MaHoaDon=100;
+GO
+---------------------------------------------------------------------------------------------------
+SELECT * FROM CHITIETHOADON;
+GO
+
+INSERT INTO CHITIETHOADON VALUES
+(1, 1, NULL, 2);
+GO
+
+UPDATE CHITIETHOADON SET SoLuong=5 WHERE MaHoaDon=1 AND MaDoAn=1 AND MaDoUong IS NULL;
+GO
+
+DELETE FROM CHITIETHOADON WHERE MaHoaDon=1 AND MaDoAn=1 AND MaDoUong IS NULL;
+GO
+---------------------------------------------------------------------------------------------------
+SELECT * FROM DOAN WHERE MaDoAn = 100;
+GO
+SELECT * FROM DOAN WHERE TenDoAn LIKE N'%TENDOAN%';
+GO
+SELECT * FROM DOAN WHERE Gia = 100;
+GO
+
+SELECT * FROM DOUONG WHERE MaDoUong = 100;
+GO
+SELECT * FROM DOUONG WHERE TenDoUong LIKE N'%TENDOUONG%';
+GO
+SELECT * FROM DOUONG WHERE Gia = 100;
+GO
+
+SELECT * FROM KHACHHANG WHERE MaKH = 100;
+GO
+SELECT * FROM KHACHHANG WHERE TenKH LIKE N'%TENKH%';
+GO
+SELECT * FROM KHACHHANG WHERE SDT = '0123456789';
+GO
+
+SELECT * FROM HOADON WHERE MaHoaDon = 100;
+GO
+SELECT * FROM HOADON WHERE MaKH = 1;
+GO
+SELECT * FROM HOADON WHERE NgayLap >= '2023-10-01' AND NgayLap < '2023-10-02';
+GO
+
+SELECT * FROM CHITIETHOADON WHERE MaHoaDon = 1;
+GO
+SELECT * FROM CHITIETHOADON WHERE MaDoAn = 1;
+GO
+SELECT * FROM CHITIETHOADON WHERE MaDoUong = 1;
+GO
+SELECT * FROM CHITIETHOADON WHERE SoLuong = 2;
+GO
+---------------------------------------------------------------------------------------------------
+CREATE VIEW V_HOADONCHITIET AS
+SELECT
+    HD.MaHoaDon AS MaHoaDon,
+    KH.TenKH AS TenKhachHang,
+    HD.NgayLap AS NgayLap,
+    COALESCE(DA.TenDoAn, DU.TenDoUong) AS TenMon,
+    CTHD.SoLuong AS SoLuong,
+    ISNULL (DA.Gia, DU.Gia) AS DonGia,
+    (CTHD.SoLuong * ISNULL (DA.Gia, DU.Gia)) AS ThanhTien
+FROM HOADON HD
+INNER JOIN CHITIETHOADON CTHD ON CTHD.MaHoaDon = HD.MaHoaDon
+INNER JOIN KHACHHANG KH ON HD.MaKH = KH.MaKH
+LEFT JOIN DOAN DA ON CTHD.MaDoAn = DA.MaDoAn
+LEFT JOIN DOUONG DU ON CTHD.MaDoUong = DU.MaDoUong;
+GO
+
+SELECT * FROM V_HOADONCHITIET
+WHERE MaHoaDon = 1;
+GO
+
+DROP VIEW V_HOADONCHITIET;
+GO
