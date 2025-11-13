@@ -1,0 +1,87 @@
+USE QLQCP;
+GO
+
+CREATE TRIGGER KIEMTRADOAN
+ON DOAN
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    DECLARE @Gia DECIMAL(10, 2);
+
+    SELECT @Gia = Gia FROM inserted;
+
+    IF @Gia <= 0
+    BEGIN
+        RAISERROR(N'Giá món ăn phải lớn hơn 0.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+GO
+
+CREATE TRIGGER KIEMTRADOUONG
+ON DOUONG
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    DECLARE @Gia DECIMAL(10, 2);
+
+    SELECT @Gia = Gia FROM inserted;
+
+    IF @Gia <= 0
+    BEGIN
+        RAISERROR(N'Giá đồ uống phải lớn hơn 0.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+GO
+
+CREATE TRIGGER KIEMTRAKHACHHANG
+ON KHACHHANG
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    DECLARE @SDT NVARCHAR(15);
+
+    SELECT @SDT = SDT FROM inserted;
+
+    IF LEN(@SDT) != 10
+    BEGIN
+        RAISERROR(N'Số điện thoại phải có độ dài 10 ký tự.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+GO
+
+CREATE TRIGGER KIEMTRAHOADON
+ON HOADON
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    DECLARE @NgayLap DATETIME;
+
+    SELECT @NgayLap = NgayLap FROM inserted;
+
+    IF @NgayLap > GETDATE()
+    BEGIN
+        RAISERROR(N'Ngày lập hóa đơn không được lớn hơn ngày hiện tại.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+GO
+
+CREATE TRIGGER KIEMTRACHITIETHOADON
+ON CHITIETHOADON
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    DECLARE @SoLuong INT;
+
+    SELECT @SoLuong = SoLuong FROM inserted;
+
+    IF @SoLuong <= 0
+    BEGIN
+        RAISERROR(N'Số lượng phải lớn hơn 0.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+GO
