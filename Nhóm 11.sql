@@ -303,10 +303,32 @@ BEGIN
             RAISERROR(N'Hóa đơn không tồn tại.', 16, 1);
             RETURN;
         END
+        IF @MaDoAn IS NULL AND @MaDoUong IS NULL
+        BEGIN
+            RAISERROR(N'Phải cung cấp ít nhất một món ăn hoặc đồ uống.', 16, 1);
+            RETURN;
+        END
+        
+        IF @MaDoAn IS NOT NULL AND @MaDoUong IS NOT NULL
+        BEGIN
+            RAISERROR(N'Chỉ được cung cấp một trong hai: món ăn hoặc đồ uống.', 16, 1);
+            RETURN;
+        END
+
+        IF @MaDoAn IS NOT NULL AND NOT EXISTS (SELECT 1 FROM DOAN WHERE MaDoAn = @MaDoAn)
+        BEGIN
+            RAISERROR(N'Món ăn không tồn tại.', 16, 1);
+            RETURN;
+        END
+
+        IF @MaDoUong IS NOT NULL AND NOT EXISTS (SELECT 1 FROM DOUONG WHERE MaDoUong = @MaDoUong)
+        BEGIN
+            RAISERROR(N'Đồ uống không tồn tại.', 16, 1);
+            RETURN;
+        END
 
         INSERT INTO CHITIETHOADON (MaHoaDon, MaDoAn, MaDoUong, SoLuong)
         VALUES (@MaHoaDon, @MaDoAn, @MaDoUong, @SoLuong);
-
         PRINT(N'Đã thêm chi tiết hóa đơn thành công.');
         COMMIT TRANSACTION;
     END TRY
@@ -321,8 +343,8 @@ GO
 EXEC THEMDOAN 1, N'Khô gà', 15000;
 EXEC THEMDOUONG 8, N'Cà phê sữa', 20000;
 EXEC THEMKHACHHANG 4, N'Nguyễn Văn An', N'0987654321';
-EXEC THEMHOADON 6, NULL, 15;
-EXEC THEMCHITIETHOADON 6, 1, 8, 2;
+EXEC THEMHOADON 6, NULL, 4;
+EXEC THEMCHITIETHOADON 6, 10, NULL, 10;
 GO
 ---------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS SUADOAN;
@@ -582,7 +604,7 @@ GO
 
 EXEC SUAKHACHHANG
     @MaKH = 1,
-    @TenKH = N'Nguyễn Văn A',
+    @TenKH = N'Nguyễn Văn An',
     @SDT = N'0987654320';
 GO
 
@@ -765,7 +787,8 @@ GO
 CREATE PROCEDURE XOACHITIETHOADON
     @MaHoaDon INT,
     @MaDoAn INT = NULL,
-    @MaDoUong INT = NULL
+    @MaDoUong INT = NULL,
+    @SoLuong INT = NULL
 AS
 BEGIN
     BEGIN TRY
@@ -778,7 +801,8 @@ BEGIN
 
         DELETE FROM CHITIETHOADON
         WHERE MaHoaDon = @MaHoaDon
-        AND (MaDoAn = @MaDoAn OR MaDoUong = @MaDoUong);
+        AND (MaDoAn = @MaDoAn OR MaDoUong = @MaDoUong)
+        AND (@SoLuong IS NULL OR SoLuong = @SoLuong);
 
         PRINT(N'Đã xóa chi tiết hóa đơn thành công.');
         COMMIT TRANSACTION;
@@ -792,6 +816,7 @@ END;
 
 EXEC XOADOAN @MaDoAn = 6;
 GO
+EXEC XOACHITIETHOADON @MaHoaDon = 6, @MaDoAn = 1;
 ----------------------------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS TIMDOANTHEOGIA;
 GO
